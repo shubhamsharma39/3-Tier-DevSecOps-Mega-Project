@@ -1,20 +1,28 @@
-// src/context/AuthContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from '../axios';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
-  const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post('/auth/login', { email, password });
+      const res = await axios.post("http://52.66.216.118:5000/api/auth/login", {
+  email,
+  password
+});
+
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       setToken(res.data.token);
@@ -23,7 +31,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       return {
         success: false,
-        message: err.response?.data?.message || 'Login failed. Please try again.',
+        message: err.response?.data?.message || 'Login failed'
       };
     }
   };
@@ -35,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       return {
         success: false,
-        message: err.response?.data?.message || 'Registration failed.',
+        message: err.response?.data?.message || 'Registration failed'
       };
     }
   };
@@ -55,3 +63,4 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+

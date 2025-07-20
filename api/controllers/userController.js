@@ -1,17 +1,15 @@
 const db = require('../models/db');
 const bcrypt = require('bcryptjs');
 
-// GET all users
 exports.getAllUsers = (req, res) => {
-  db.query('SELECT id, name, email FROM users', (err, results) => {
+  db.query('SELECT id, name, email, role FROM users', (err, results) => {
     if (err) return res.status(500).json({ error: err });
     res.json(results);
   });
 };
 
-// CREATE new user
 exports.addUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Name, email, and password are required' });
@@ -20,11 +18,11 @@ exports.addUser = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     db.query(
-      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-      [name, email, hashedPassword],
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      [name, email, hashedPassword, role || 'viewer'],
       (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json({ id: result.insertId, name, email });
+        res.status(201).json({ id: result.insertId, name, email, role: role || 'viewer' });
       }
     );
   } catch (error) {
@@ -32,7 +30,6 @@ exports.addUser = async (req, res) => {
   }
 };
 
-// UPDATE user
 exports.updateUser = (req, res) => {
   const { name, email } = req.body;
   db.query(
@@ -45,7 +42,6 @@ exports.updateUser = (req, res) => {
   );
 };
 
-// DELETE user
 exports.deleteUser = (req, res) => {
   db.query('DELETE FROM users WHERE id = ?', [req.params.id], (err) => {
     if (err) return res.status(500).json({ error: err });

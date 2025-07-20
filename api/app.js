@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
-const db = require('./models/db'); // MySQL pool connection
+const db = require('./models/db');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-// Function to wait until MySQL is ready
+// Wait for MySQL to be ready
 const waitForDb = async (retries = 30, delay = 2000) => {
   while (retries > 0) {
     try {
@@ -40,7 +40,7 @@ const waitForDb = async (retries = 30, delay = 2000) => {
   throw new Error('❌ MySQL `users` table not available after multiple retries.');
 };
 
-// Function to seed admin user if not exists
+// Seed default admin user if not exists
 const seedAdminUser = async () => {
   const name = process.env.ADMIN_NAME || 'Admin User';
   const email = process.env.ADMIN_EMAIL || 'admin@example.com';
@@ -74,12 +74,12 @@ const seedAdminUser = async () => {
     await waitForDb();
     await seedAdminUser();
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+    app.listen(5000, '0.0.0.0', () => {
+      console.log(`🚀 Server running on http://0.0.0.0:5000`);
     });
   } catch (err) {
     console.error(err.message);
     process.exit(1);
   }
 })();
-
+  
