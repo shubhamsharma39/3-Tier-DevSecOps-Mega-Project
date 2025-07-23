@@ -26,7 +26,7 @@ kind: Deployment
 metadata:
   name: backend
 spec:
-  replicas:
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -34,34 +34,33 @@ spec:
     metadata:
       labels:
         app: backend
-     spec:
+    spec:
       containers:
         - name: backend
           image: shubham0039sharma/backend:latest
           ports:
-             - containerPort: 5000
+            - containerPort: 5000
           env:
-             - name: DB_HOST
-               valueFrom:
-                 configMapKeyRef:
-                   name: backend-config
-                   key: DB_HOST
-             - name: DB_USER
-               valueFrom:
-                 configMapKeyRef:
-                   name: backend-config
-                   key: DB_USER
-             - name: DB_NAME
-               valueFrom:
-                 configMapKeyRef:
-                   name: backend-config
-                   key: RESET_ADMIN_PASS
-             - name: DB_PASSWORD
-               valueFrom:
-                 secretKeyRef:
-                   name: backend-secret
-                   key: JWT_SECRET
-
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: DB_HOST
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: DB_USER
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: DB_NAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: DB_PASSWORD
 ---
 apiVersion: v1
 kind: Service
