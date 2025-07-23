@@ -58,7 +58,6 @@ spec:
   hostPath:
     path: /mnt/data/mysql
 
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -75,38 +74,44 @@ spec:
       storage: 5Gi
 
 ---
-appiVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: musql
+  name: mysql
+  labels:
+    app: mysql
 spec:
   replicas: 1
   selector:
-   matchLabels:
-     app: mysql
-   spec:
-     containers:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
         - name: mysql
-          large: mysql:8
+          image: mysql:8
           env:
-             - name: MYSQL_ROOT_PASSWORD
-               valueFrom:
-                 secretkeyRef:
-                   name: mysql-secret
-                   key: MYSQL_ROOT_PASSWORD
-        - name: MYSQL_DATABASE
-          valueFrom:
-            configMapKeyRef:
-                   name: mysql-config
-                   key: MYSQL_DATABASE
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: MYSQL_DATABASE
           ports:
-             - containerPort: 3306
+            - containerPort: 3306
           volumeMounts:
-             - name: mysql-storage
-               mountPath: /var/lib/mysql
-             - name: initdb
-               mountPath: /docker-entrypoint-initdb.d
-     volumes:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+            - name: initdb
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
         - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-pvc
@@ -120,15 +125,8 @@ kind: Service
 metadata:
   name: mysql
 spec:
-  selestor:
+  selector:
     app: mysql
   ports:
     - port: 3306
       targetPort: 3306
-
-
-
-
-
-
-
