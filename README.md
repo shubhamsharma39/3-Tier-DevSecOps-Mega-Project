@@ -2,31 +2,35 @@
 
 This repository contains a simple Node.js API and a React client used for a user management demo. Follow the steps below to get the project running locally.
 
+🔗 **GitHub Repository**: [3-Tier-DevSecOps-Mega-Project](https://github.com/shubhamsharma39/3-Tier-DevSecOps-Mega-Project)
 ## Setup
 
 1. Install Node.js (version 18 or later is recommended).
 2. Install dependencies for both the API and client:
 
-   ```bash
+   
+bash
    cd api && npm install
    cd ../client && npm install
-   ```
+
 
 3. Start the API server:
 
-   ```bash
+   
+bash
    cd api
    npm start
-   ```
+
 
 4. In a separate terminal, start the React client:
 
-   ```bash
+   
+bash
    cd client
    npm start
-   ```
 
-5. Open `http://localhost:3000` in your browser to use the application.
+
+5. Open http://localhost:3000 in your browser to use the application.
 
 6. Folder Structure
 .
@@ -97,6 +101,3 @@ This repository contains a simple Node.js API and a React client used for a user
      View resource usage, logs, alerts in Grafana dashboards
 
      Export metrics from Node.js via /metrics endpoint (if configured)
-
-
-The client now displays an animated banner welcoming you to **DevOps Shack**.
